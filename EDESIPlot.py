@@ -26,6 +26,12 @@ def anon(x):
    print x
 
 
+def GraphCleanUp(ax):
+    ax.spines['right'].set_visible(False)
+    ax.spines['top'].set_visible(False)
+    ax.get_xaxis().tick_bottom()
+    ax.get_yaxis().tick_left()
+
 file = open(filename, 'r')
 lines = file.readlines()
 
@@ -138,7 +144,7 @@ for i in contourz:
    ZMatrix.append(binArr.values())
    for mz in breakDownMZ:
        listofAllTrace[mz].append(binArr[mz])
-       print str(max(binArr)) + " " + str(TraceMaxInt)
+       #print str(max(binArr)) + " " + str(TraceMaxInt)
        if(max(binArr) > TraceMaxInt):
            TraceMaxInt = max(binArr) 
    binArr = dict.fromkeys(binArr, 0)
@@ -318,7 +324,7 @@ showBreakdown = options.breakDown
 line_colours = ('BlueViolet', 'Crimson', 'ForestGreen', 'Indigo', 'Tomato', 'Maroon')
 
 minFilter = int(options.minFilter)
-print minFilter
+#print minFilter
 levels = arange(minFilter, max(array(ZMatrix).max(axis=1)), 6)
 #line_widths = (1, 1.5, 2, 2.5, 3, 3.5)
 
@@ -326,7 +332,8 @@ subplotVal = 1
 if(showBreakdown == True):
     subplotVal = 2
 
-plt.figure()
+plt.figure(figsize=(8,9))
+matplotlib.rcParams.update({'font.size':16})
 gs1 = gridspec.GridSpec(subplotVal,2,width_ratios=[3,1], height_ratios=[1,3])
 gs1.update(wspace=0.025, hspace=0.025)
 
@@ -334,22 +341,27 @@ gs1.update(wspace=0.025, hspace=0.025)
 ax2 = plt.subplot(gs1[subplotVal])
 ContourPlot = ax2.contour(binArr.keys(), contourPlotArr.keys(), ZMatrix, levels, colors = 'k')
 ContouryTick = arange(0, Valueround1sig(max(contourPlotArr.keys()))+10, 10)
-ax2.set_yticks(ContouryTick[:-1])
-ContourxTick = arange(0, Valueround1sig(max(binArr.keys()))+250, 250)
-print ContourxTick
-ax2.set_xticks(ContourxTick[:-1])
-ax2.set_ylabel('Collision Energy (V)')
-ax2.set_xlabel('m/z')
 
+#Labels the smallest value of the axis and then continue labelling with the arange increment ie 50, 750, 1500, 2250 rather than 50, 800, 1550, 2300 (tl;dr 50 does not affect the arange values)
+ax2.set_yticks(concatenate(([Valueround1sig(min(contourPlotArr.keys()))],ContouryTick[:-1]), axis=0))
+#print ContouryTick[:-1]
+ContourxTick = arange(0, Valueround1sig(max(binArr.keys()))+750, 750)
+#print ContourxTick[:-1]
+ax2.set_xticks(concatenate(([Valueround1sig(min(binArr.keys()))],ContourxTick[:-1]), axis=0))
+ax2.set_ylabel('Collision Energy (eV)')
+ax2.set_xlabel('m/z', style='italic')
+GraphCleanUp(ax2)
+ax2.xaxis.labelpad=100
 
 ax1 = plt.subplot(gs1[0], sharex=ax2)
 SummedFullScan = ax1.plot(summed.keys(), summed.values())
-plt.title('Summed Full Scan')
+plt.title('Energy Dependent-ESI MS/MS Plot')
 plt.setp(ax1.get_xticklabels(), visible=False)
 ax1.set_ylabel('Intensity')
 #stackoverflow: 11244514
-ax1yTick = arange(0, Valueround1sig(max(summed.values()))+100000, 100000) 
+ax1yTick = arange(0, Valueround1sig(max(summed.values()))+10000, 10000) 
 ax1.set_yticks(ax1yTick)
+GraphCleanUp(ax1)
 
 
 showBreakdown = options.breakDown
@@ -358,8 +370,10 @@ if(showBreakdown == True):
     for mz in breakDownMZ:
         ax3.plot(listofAllTrace[mz], contourPlotArr.keys())
     plt.setp(ax3.get_yticklabels(), visible=False)
-    BreakDownInt = arange(0, TraceMaxInt, 1000)
-    print TraceMaxInt
+    BreakDownInt = arange(0, TraceMaxInt, 1500)
+    ax3.set_xlabel('Intensity')
+    #print TraceMaxInt
     ax3.set_xticks(BreakDownInt)
+    GraphCleanUp(ax3)
 
-plt.savefig('Contour.png')
+plt.savefig('Contour.png', bbox_inches='tight')
