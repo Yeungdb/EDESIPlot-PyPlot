@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/USR/bin/python2.7
 
 from optparse import OptionParser
 import collections
@@ -11,7 +11,7 @@ parser = OptionParser()
 parser.add_option('-f', "--filename", help="Filename of file for processing", action="store")
 parser.add_option('-w', "--width", help="Width of line", action="store")
 parser.add_option('-m', "--minFilter", help="Minimum Value for Contour Plot Filter", action="store")
-parser.add_option('-s', "--fontSize", help="Font Size for Plot", action="store")
+parser.add_option('-s', "--fontSize", help="Font Size for Plot", action="store") 
 parser.add_option('-t', "--threshold", help="Threshold Intensity for Picking MZ in Breakdown Graph", action="store")
 parser.add_option('-o', "--outputFile", help="Name of Output File (enter without .html)", action="store")
 parser.add_option('-k', '--tickDist', help="Distance between each tick", action="store")
@@ -334,6 +334,9 @@ if(showBreakdown == True):
 
 plt.figure(figsize=(8,9))
 matplotlib.rcParams.update({'font.size':16})
+matplotlib.rcParams['xtick.direction'] = 'out'
+matplotlib.rcParams['ytick.direction'] = 'out'
+
 gs1 = gridspec.GridSpec(subplotVal,2,width_ratios=[3,1], height_ratios=[1,3])
 gs1.update(wspace=0.025, hspace=0.025)
 
@@ -347,33 +350,61 @@ ax2.set_yticks(concatenate(([Valueround1sig(min(contourPlotArr.keys()))],Contour
 #print ContouryTick[:-1]
 ContourxTick = arange(0, Valueround1sig(max(binArr.keys()))+750, 750)
 #print ContourxTick[:-1]
-ax2.set_xticks(concatenate(([Valueround1sig(min(binArr.keys()))],ContourxTick[:-1]), axis=0))
-ax2.set_ylabel('Collision Energy (eV)')
+#ax2.set_xticks(concatenate(([Valueround1sig(min(binArr.keys()))],ContourxTick[:-1]), axis=0))
+ax2.set_ylabel('Collision Energy (V)')
 ax2.set_xlabel('m/z', style='italic')
 GraphCleanUp(ax2)
-ax2.xaxis.labelpad=100
+
+
+def normalizeMSSpectrum(mzList):
+    maxValue = max(mzList)
+    relInt = []
+    for i in mzList:
+       relInt.append((float(i)/float(maxValue))*100)
+       #print ((float(i)/float(maxValue))*100)
+    return relInt
 
 ax1 = plt.subplot(gs1[0], sharex=ax2)
-SummedFullScan = ax1.plot(summed.keys(), summed.values())
-plt.title('Energy Dependent-ESI MS/MS Plot')
+#SummedFullScan = ax1.plot(summed.keys(), summed.values()) #Absolute Intensity
+SummedFullScan = ax1.plot(summed.keys(), normalizeMSSpectrum(summed.values()))
+plt.title('Energy Dependent-ESI MS/MS Plot', y=1.08)
 plt.setp(ax1.get_xticklabels(), visible=False)
-ax1.set_ylabel('Intensity')
+#ax1.set_ylabel('Intensity') #Absolute Intensity
+ax1.set_ylabel('Intensity (%)')
 #stackoverflow: 11244514
-ax1yTick = arange(0, Valueround1sig(max(summed.values()))+10000, 10000) 
-ax1.set_yticks(ax1yTick)
+#ax1yTick = arange(0, Valueround1sig(max(summed.values()))+10000, 10000) #Absolute Intensity
+ax1.set_yticks([0, 50, 100]) #Relative Intensity`
 GraphCleanUp(ax1)
+ax1.spines['bottom'].set_visible(False)
+ax1.xaxis.set_ticks_position('none')
 
+def RoundToTen(val):
+    import math
+    return int(math.ceil(val/10.0))*10
+
+zoom = True
+if (zoom):
+    StartRange = min(listofAllTrace.keys())
+    EndRange = max(listofAllTrace.keys())
+    Range = (EndRange-StartRange)/10
+    xMinVal = StartRange - Range
+    xMaxVal = EndRange + Range
+    ax2.set_xticks([StartRange, EndRange])
+    ax2.set_xlim(xmin=xMinVal, xmax=xMaxVal)
+    ax1.set_xlim(xmin=xMinVal, xmax=xMaxVal)
 
 showBreakdown = options.breakDown
 if(showBreakdown == True):
     ax3 = plt.subplot(gs1[3], sharey=ax2)
     for mz in breakDownMZ:
-        ax3.plot(listofAllTrace[mz], contourPlotArr.keys())
+        #ax3.plot(listofAllTrace[mz], contourPlotArr.keys()) #Absolute Intensity
+        ax3.plot(normalizeMSSpectrum(listofAllTrace[mz]), contourPlotArr.keys()) 
     plt.setp(ax3.get_yticklabels(), visible=False)
-    BreakDownInt = arange(0, TraceMaxInt, 1500)
-    ax3.set_xlabel('Intensity')
+    #BreakDownInt = arange(0, TraceMaxInt, 1500)
+    ax3.set_xlabel('Intensity (%)')
     #print TraceMaxInt
-    ax3.set_xticks(BreakDownInt)
+    #ax3.set_xticks(BreakDownInt)
+    ax3.set_xticks([0, 50, 100])
     GraphCleanUp(ax3)
 
-plt.savefig('Contour.png', bbox_inches='tight')
+plt.savefig('../Contour.png', bbox_inches='tight')
