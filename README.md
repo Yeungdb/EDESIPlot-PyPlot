@@ -10,7 +10,7 @@ There a few things that needs to be installed before it can run properly.
 
 https://store.enthought.com/downloads/#default
 
-2) Proteowizard (This is also Free)
+2) Proteowizard (This i
 
 http://proteowizard.sourceforge.net/downloads.shtml
 
