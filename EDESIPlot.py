@@ -1,4 +1,4 @@
-#!/USR/bin/python2.7
+#!/usr/bin/python2.7
 
 from optparse import OptionParser
 import collections
@@ -155,154 +155,6 @@ for i in contourz:
 newArr = collections.OrderedDict(sorted(tArr.items()))
 
 
-"""
-##################################
-#PLOTLY PLOTS
-
-#Summed Scan Full Spectrum
-trace0 = go.Scatter(
-   x = summed.keys(),
-   y = summed.values(),
-   xaxis = 'x1',
-   yaxis = 'y2',
-   mode = 'lines+text',
-   name = "Summed Mass Spectrum " + filename,
-   line = dict(
-      color = ('rgb(205, 12, 24)'),
-      width = int(options.width)
-   )
-)
-
-minFilter = options.minFilter
-
-#Contour Plot for EDESI (Collision Energy vs m/z)
-trace1 = go.Contour(
-   z = ZMatrix, 
-   x = binArr.keys(),
-   y = contourPlotArr.keys(),
-   yaxis='y1',
-   name = "Energy dependent Electrospray Ionization",
-   autocontour=False,
-   showscale=True,
-   contours=dict(
-      coloring='lines',
-      start = minFilter,
-      end=maxVal,
-      size = 200
-   )
-)
-
-data = [trace0, trace1]
-
-showBreakdown = options.breakDown
-if(showBreakdown == True):
-    for mz in breakDownMZ:
-        trace = go.Scatter(
-           x = listofAllTrace[mz],
-           name = "" + str(mz),
-           xaxis='x2',
-           text="" + str(mz) + "m/z",
-           textposition = 'top',
-           line = dict(
-              width = int(options.width)
-           )
-        )
-        data.append(trace)
-
-
-#tickDist = int(options.tickDist)
-#maxRange = int(options.maxRange)
-#print maxIntensity
-#print tickDist
-marginStyle=go.Margin(r=50, t=50, pad=4)
-marginStyleBreakdown=go.Margin(l=50, r=50, t=50, pad=4)
-#xAxisStyleMZ=dict(title='m/z',showgrid=False,ticks='outside',zeroline=True, range=[0, maxRange])
-#yAxisStyleCOLENG=dict(title='Collision Energy(V)',showgrid=False,ticks='outside', showline=True, zeroline=False)
-#xAxisStyleINT=dict(title='Intensity',domain=[0.78,1],ticks='outside',showgrid=False,zeroline=True, dtick=tickDist)
-#yAxisStyleINT=dict(title='Intensity',domain=[0.78,1],ticks='outside',showgrid=False,showline=True, zeroline=False)
-
-
-
-yAxisStyleCOLENG=dict(title='Collision Energy(V)',showgrid=False,ticks='outside',zeroline=False)
-yAxisStyleINT=dict(title='Intensity',domain=[0.78,1],ticks='outside',showgrid=False, zeroline=False)
-xAxisStyleMZ=dict(title='m/z',showgrid=False,ticks='outside',zeroline=True)
-xAxisStyleINT=dict(title='Intensity',domain=[0.78,1],ticks='outside',showgrid=False,zeroline=True)
-
-#fontSize = int(options.fontSize)
-#fontStyle=dict(family='Arial',size=fontSize,color='#000')
-widthStyle=400
-widthToheightRatio=float(1280/1024) #height/width
-pubStyle = bool(options.publication)
-if(pubStyle):
-    if(showBreakdown):
-        xAxisStyleMZ['domain'] = (0, 0.78)
-        yAxisStyleCOLENG['domain'] = (0, 0.78)
-        layout = go.Layout(
-                #font=fontStyle,
-                width=widthStyle,
-                height=widthStyle*widthToheightRatio,
-                showlegend=False,
-                xaxis=xAxisStyleMZ,
-                yaxis=yAxisStyleCOLENG,
-                margin=marginStyle,
-                xaxis2=xAxisStyleINT,
-                yaxis2=yAxisStyleINT
-            )
-    else:
-        layout = go.Layout(
-                #font=fontStyle,
-                width=widthStyle,
-                height=widthStyle*widthToheightRatio,
-                showlegend=False,
-                xaxis=xAxisStyleMZ,
-                yaxis=yAxisStyleCOLENG,
-                margin=marginStyle,
-                yaxis2=yAxisStyleINT
-            )
-else:
-    if(showBreakdown):
-        xAxisStyleMZ['domain'] = (0, 0.78)
-        yAxisStyleCOLENG['domain'] = (0, 0.78)
-        layout = go.Layout(
-                #font=fontStyle,
-                showlegend=False,
-                xaxis=xAxisStyleMZ,
-                yaxis=yAxisStyleCOLENG,
-                margin=marginStyle,
-                xaxis2=xAxisStyleINT,
-                yaxis2=yAxisStyleINT
-            )
-    else:
-        layout = go.Layout(
-                #font=fontStyle,
-                showlegend=False,
-                xaxis=xAxisStyleMZ,
-                yaxis=yAxisStyleCOLENG,
-                margin=marginStyle,
-                yaxis2=yAxisStyleINT
-            )
-
-fig = go.Figure(data=data, layout=layout)
-
-#plotly.offline.plot(fig, validate=False, filename='{OUTFILE}.html'.format(OUTFILE=options.outputFile))
-outFileDir = "/".join(options.outputFile.split('/')[:-1])
-plotly.offline.plot(fig, validate=False, filename='{OUTDIR}/temp.html'.format(OUTDIR=outFileDir))
-#py.image.save_as(fig, filename='EDESI.png')
-#py.image.ishow(fig, 'png', scale=1)
-Readfile = open('{OUTDIR}/temp.html'.format(OUTDIR=outFileDir), 'r')
-Writefile = open('{OUTFILE}.html'.format(OUTFILE=options.outputFile), 'w+')
-lines = Readfile.readlines()
-for i in lines:
-   if('Export to plot.ly' in i):
-      i = i.replace("Export to plot.ly", "")
-      Writefile.write(i)
-      continue
-   Writefile.write(i)
-Readfile.close()
-Writefile.close()
-
-"""
-
 import matplotlib
 import matplotlib.gridspec as gridspec
 import matplotlib.pyplot as plt
@@ -356,8 +208,7 @@ ax2.set_xlabel('m/z', style='italic')
 GraphCleanUp(ax2)
 
 
-def normalizeMSSpectrum(mzList):
-    maxValue = max(mzList)
+def normalizeMSSpectrum(mzList, maxValue):
     relInt = []
     for i in mzList:
        relInt.append((float(i)/float(maxValue))*100)
@@ -366,7 +217,7 @@ def normalizeMSSpectrum(mzList):
 
 ax1 = plt.subplot(gs1[0], sharex=ax2)
 #SummedFullScan = ax1.plot(summed.keys(), summed.values()) #Absolute Intensity
-SummedFullScan = ax1.plot(summed.keys(), normalizeMSSpectrum(summed.values()))
+SummedFullScan = ax1.plot(summed.keys(), normalizeMSSpectrum(summed.values(), max(summed.values())))
 plt.title('Energy Dependent-ESI MS/MS Plot', y=1.08)
 plt.setp(ax1.get_xticklabels(), visible=False)
 #ax1.set_ylabel('Intensity') #Absolute Intensity
@@ -382,29 +233,52 @@ def RoundToTen(val):
     import math
     return int(math.ceil(val/10.0))*10
 
+def RoundToTenFloor(val):
+    import math
+    return int(math.floor(val/10.0))*10
+
+def RoundToHundred(val):
+    import math
+    return int(math.ceil(val/100.0))*100
+
 zoom = True
 if (zoom):
     StartRange = min(listofAllTrace.keys())
     EndRange = max(listofAllTrace.keys())
+    print EndRange
     Range = (EndRange-StartRange)/10
     xMinVal = StartRange - Range
     xMaxVal = EndRange + Range
-    ax2.set_xticks([StartRange, EndRange])
+    print RoundToHundred(EndRange)
+    xtickRange = arange(RoundToHundred(StartRange)-100, RoundToHundred(EndRange)+100, 100)
+    print xtickRange
+    #for i in range(0, len(xtickRange)):
+    #   xtickRange[i] = RoundToTenFloor(xtickRange[i])
+    #print xtickRange
+    ax2.set_xticks(xtickRange)
+
+    #xMinVal = RoundToTenFloor(xMinVal)
+    #xMaxVal = RoundToTenFloor(xMaxVal)
     ax2.set_xlim(xmin=xMinVal, xmax=xMaxVal)
     ax1.set_xlim(xmin=xMinVal, xmax=xMaxVal)
 
 showBreakdown = options.breakDown
 if(showBreakdown == True):
     ax3 = plt.subplot(gs1[3], sharey=ax2)
+    maxOfAllTraces = 0
+    for i in listofAllTrace:
+        testMaxVal = max(listofAllTrace[i])
+        if (testMaxVal > maxOfAllTraces):
+            maxOfAllTraces = testMaxVal 
     for mz in breakDownMZ:
         #ax3.plot(listofAllTrace[mz], contourPlotArr.keys()) #Absolute Intensity
-        ax3.plot(normalizeMSSpectrum(listofAllTrace[mz]), contourPlotArr.keys()) 
+        ax3.plot(normalizeMSSpectrum(listofAllTrace[mz], maxOfAllTraces), contourPlotArr.keys()) 
     plt.setp(ax3.get_yticklabels(), visible=False)
     #BreakDownInt = arange(0, TraceMaxInt, 1500)
     ax3.set_xlabel('Intensity (%)')
     #print TraceMaxInt
     #ax3.set_xticks(BreakDownInt)
-    ax3.set_xticks([0, 50, 100])
+    ax3.set_xticks([' ', ' ',100])
     GraphCleanUp(ax3)
 
-plt.savefig('../Contour.png', bbox_inches='tight')
+plt.savefig('../{OUTFILE}.png'.format(OUTFILE = options.outputFile), bbox_inches='tight')
