@@ -14,7 +14,7 @@ https://store.enthought.com/downloads/#default
 
 http://proteowizard.sourceforge.net/downloads.shtml
 
-##Operation (Running) Steps
+## Operation (Running) Steps
 
 1) Open Canopy and then open EDESIwithBreakdownGraph.py.
 
