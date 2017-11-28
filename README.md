@@ -36,11 +36,11 @@ There a few things that needs to be installed before it can run properly.
 
    Minimum Filter Value of the Contour Plot:  (This is the smallest threshold value that the contour plot will show)
 
-      (For example, if you typed in 20, peak in a spectra with a peak intensity higher than 20 counts will be coloured in the contour plot)
+       - For example, if you typed in 20, peak in a spectra with a peak intensity higher than 20 counts will be coloured in the contour plot
 
    Threshold Intensity for Summed Mass Spectra: 
 
-      (This is one is for the break down graph. The value you enter say 1150, any peak in the summed spectra above 1150 counts will be selected for plotting in the breakdown graph)
+       - This is one is for the break down graph. The value you enter say 1150, any peak in the summed spectra above 1150 counts will be selected for plotting in the breakdown graph
 
 7) Once you have filled out the values, press enter and let the program run (~10 seconds)
 
