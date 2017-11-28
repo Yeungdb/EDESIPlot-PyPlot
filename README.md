@@ -1,6 +1,9 @@
 # EDESI Plot
 ## Darien Yeung ([@Yeungdb](https://twitter.com/Yeungdb))
 
+## Announcement
+
+Web version of the code is almost ready for deployment. Will annouce on Twitter.
 
 ## Installation Guide
 
@@ -13,7 +16,7 @@ There a few things that needs to be installed before it can run properly.
 
 ## Operation (Running) Steps
 
-1) Open Canopy and then open EDESIwithBreakdownGraph.py.
+1) Open Canopy and then open Windows_EDESIwithBreakdownGraph.py.
 
 2) Then open MSConvert inside Proteowizard:
 
