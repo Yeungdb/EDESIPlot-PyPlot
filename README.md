@@ -1,8 +1,8 @@
-#EDESI Plot
-##Darien Yeung (@Yeungdb)
+# EDESI Plot
+## Darien Yeung ([@Yeungdb](https://twitter.com/Yeungdb))
 
 
-##Installation Guide
+## Installation Guide
 
 There a few things that needs to be installed before it can run properly.
 
