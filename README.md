@@ -1,22 +1,22 @@
-#EDESI Plot
-##Darien Yeung (@Yeungdb)
+# EDESI Plot
+## Darien Yeung ([@Yeungdb](https://twitter.com/Yeungdb))
 
+## Announcement
 
-##Installation Guide
+Web version of the code is almost ready for deployment. Will annouce on Twitter.
+
+## Installation Guide
 
 There a few things that needs to be installed before it can run properly.
 
-1) Canopy (This is Free)
+1) [Canopy](https://store.enthought.com/downloads/#default) (This is Free)
 
-https://store.enthought.com/downloads/#default
+2) [Proteowizard](http://proteowizard.sourceforge.net/downloads.shtml) (This is Free)
 
-2) Proteowizard (This i
 
-http://proteowizard.sourceforge.net/downloads.shtml
+## Operation (Running) Steps
 
-##Operation (Running) Steps
-
-1) Open Canopy and then open EDESIwithBreakdownGraph.py.
+1) Open Canopy and then open Windows_EDESIwithBreakdownGraph.py.
 
 2) Then open MSConvert inside Proteowizard:
 
@@ -36,11 +36,11 @@ http://proteowizard.sourceforge.net/downloads.shtml
 
    Minimum Filter Value of the Contour Plot:  (This is the smallest threshold value that the contour plot will show)
 
-      (For example, if you typed in 20, peak in a spectra with a peak intensity higher than 20 counts will be coloured in the contour plot)
+   - For example, if you typed in 20, peak in a spectra with a peak intensity higher than 20 counts will be coloured in the contour plot
 
    Threshold Intensity for Summed Mass Spectra: 
 
-      (This is one is for the break down graph. The value you enter say 1150, any peak in the summed spectra above 1150 counts will be selected for plotting in the breakdown graph)
+   - This is one is for the break down graph. The value you enter say 1150, any peak in the summed spectra above 1150 counts will be selected for plotting in the breakdown graph
 
 7) Once you have filled out the values, press enter and let the program run (~10 seconds)
 
