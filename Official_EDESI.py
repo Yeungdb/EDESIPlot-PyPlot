@@ -3,8 +3,7 @@ from tkFileDialog import askopenfilename, askdirectory
 import tkSimpleDialog
 from Tkinter import *
 
-MAINDIRECTORY = ""
-
+MAINDIRECTORY = "" 
 class MyDialog(tkSimpleDialog.Dialog):
     def body(self, master):
         #Label(master, text="Line Width for Mass Spectrum (pixel: 1-10):").grid(row=0)
@@ -68,7 +67,6 @@ def smooth(x, window_len=5, window='hanning'):
 
 
    s=numpy.r_[x[window_len-1:0:-1],x,x[-2:-window_len-1:-1]]
-   #print(len(s))
    if window == 'flat': #moving average
       w=numpy.ones(window_len,'d')
    else:
@@ -154,7 +152,6 @@ import collections
 
 file = open(filename, 'r')
 lines = file.readlines()
-#print lines[67]
 
 arr = {} #Time to ColToSpec
 ColToSpec = {} #Collision Energy to Spectrum
@@ -183,7 +180,6 @@ for i in range(67, len(lines)):
     SpecDict = {}
     if "index" in lines[i]:
         scanNumber = int(float(lines[i].split(":")[1]))
-        print scanNumber
         if scanNumber == startCollInd:
            STARTCERAMP = 1
         if scanNumber == endCollInd:
@@ -226,7 +222,6 @@ for i in range(67, len(lines)):
         intens = []
 
 #Dictionary with key of (time, collision energy): ((mz: intensity), (mz: intensity)....)
-#print "Specta Arr"
 tArr = collections.OrderedDict(sorted(arr.items()))
 #SUMMING Spectra information
 
@@ -235,24 +230,18 @@ for i in arr:
     c.update(tArr[i]) #Summing values of the same m/z
 
 contourPlotArr = collections.OrderedDict(sorted(contourArr.items()))
-#print contourPlotArr
 #x, y = zip(*contourPlotArr.keys())
 #contourx = contourPlotArr.keys()
-#print "X"
-#print contourx
 
 
 #################################
 #Sum the data for Summed Full Scan
-print "SUM"
 summed = collections.OrderedDict(sorted(c.items(), key = lambda x: float(x[0])))
-#print "summ"
 
 
 #################################3
 #MAKE Breakdown Graphs
 
-print "BREAKDOWN"
 #threshold = paramGetter[2]
 threshold = options.threshold
 breakDownMZ = []
@@ -263,21 +252,16 @@ for i in summed:
             localMaxima = summed[i]
         else:
             #Remove local maximas that are located on the side of large local maximas ie 123.3333: 12, 123.4545: 13, 12,5444: 12, 12.6333: 126, 12.7333: 12
-            print str(i) + " " + str(summed[i]) 
             breakDownMZ.append(int(float(i)))
     else:
         localMaxima = 0
-print breakDownMZ
 
 listofAllTrace = {}
 for mz in breakDownMZ:
     listofAllTrace[mz] = []
 #################################
 #BINNING DATA TO UNIT MASS RESOLUTION
-print "BIN"
 binArr = {}
-#print maxVal
-#print minVal
 for i in range(minVal, maxVal+1):
    binArr[i] = 0
 
@@ -287,34 +271,15 @@ contourz = contourPlotArr.values()
 for i in contourz:
    for j in i:
       binArr[int(float(j))] += i[j]
-      #print j
    ZMatrix.append(binArr.values())
    for mz in breakDownMZ:
        listofAllTrace[mz].append(binArr[mz])
    binArr = dict.fromkeys(binArr, 0)
-   #print len(i)
-#print ZMatrix
 
-#print "breakdown"
-#print breakDownMZ
-#print binArr
-
-#print "Y"
-#print contoury
-
-print "LIST OF ALL TRACE"
-print listofAllTrace
-
-#print "Z"
-#print contourz
-#print summed
 #################################
 #AT THIS POINT BASICALLY, c has the summed m/z and arr has the time, collision energy and associated spectrum
 
 newArr = collections.OrderedDict(sorted(tArr.items()))
-
-
-print "PLOT"
 
 showBreakdown = options.breakDown
 line_colours = ('BlueViolet', 'Crimson', 'ForestGreen', 'Indigo', 'Tomato', 'Maroon')
@@ -335,17 +300,11 @@ matplotlib.rcParams['ytick.direction'] = 'out'
 gs1 = gridspec.GridSpec(subplotVal,2,width_ratios=[3,1], height_ratios=[1,3])
 gs1.update(wspace=0.025, hspace=0.025)
 
-print "CONTOUR"
 ax2 = plt.subplot(gs1[subplotVal])
-print len(binArr.keys())
-print len(contourPlotArr.keys())
-print len(ZMatrix)
-print len(levels)
 
 ContourPlot = ax2.contour(binArr.keys(), contourPlotArr.keys(), ZMatrix, levels, colors = 'k')
 ContouryTick = arange(0, Valueround1sig(max(contourPlotArr.keys()))+10, 10)
 
-print "SETUP TICKS"
 
 step = 10 ##SET TOGGLABLE
 
@@ -356,7 +315,6 @@ ax2.set_ylabel('Collision Energy (V)')
 ax2.set_xlabel('m/z', style='italic')
 GraphCleanUp(ax2)
 
-print "SUMMED SPECTRA"
 ax1 = plt.subplot(gs1[0], sharex=ax2)
 SummedFullScan = ax1.plot(summed.keys(), normalizeMSSpectrum(summed.values(), max(summed.values())))
 #plt.title('Energy Dependent-ESI MS/MS Plot', y=1.08)
@@ -374,24 +332,19 @@ xMaxVal = int(maxVal/500) * 500
 ax2.set_xlim(xmin=xMinVal, xmax=xMaxVal)
 ax1.set_xlim(xmin=xMinVal, xmax=xMaxVal)
 
-print "ZOOM"
 zoom = options.zoom 
 if (zoom):
     StartRange = min(listofAllTrace.keys())
     EndRange = max(listofAllTrace.keys())
-    print EndRange
     Range = (EndRange-StartRange)/10
     xMinVal = StartRange - Range
     xMaxVal = EndRange + Range
-    print RoundToHundred(EndRange)
     xtickRange = arange(RoundToHundred(StartRange)-100, RoundToHundred(EndRange)+100, 100)
-    print xtickRange
     ax2.set_xticks(xtickRange)
 
     ax2.set_xlim(xmin=xMinVal, xmax=xMaxVal)
     ax1.set_xlim(xmin=xMinVal, xmax=xMaxVal)
 
-print "BREAKDOWN GRAPH"
 showBreakdown = options.breakDown
 windowSize = 11 #Toggle
 if(showBreakdown == True):
@@ -409,5 +362,4 @@ if(showBreakdown == True):
     ax3.set_xlim(xmin=0, xmax=100)
     ax3.set_xticks([100])
     GraphCleanUp(ax3)
-print "SAVEFIG"
 plt.savefig('{OUTFILE}.png'.format(OUTFILE = options.outputFile), bbox_inches='tight')
